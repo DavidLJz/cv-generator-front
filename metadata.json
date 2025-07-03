@@ -1,0 +1,5 @@
+{
+  "name": "Copy of AI CV Generator",
+  "description": "An intelligent CV builder that helps you create, edit, and optimize your resume. The application provides a user-friendly form to input your professional details and a live preview of the generated CV. You can download the final document as HTML or PDF.",
+  "requestFramePermissions": []
+}
