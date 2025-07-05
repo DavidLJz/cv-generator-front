@@ -2,6 +2,9 @@
 declare const html2canvas: any;
 declare const jspdf: any;
 
+import { CVData } from "@/types";
+
+
 const getCvHtml = (element: HTMLElement): string => {
     const styles = Array.from(document.styleSheets)
         .map(styleSheet => {
@@ -42,17 +45,39 @@ const getCvHtml = (element: HTMLElement): string => {
     `;
 }
 
-export const downloadAsHtml = (element: HTMLElement, name: string) => {
-    const htmlContent = getCvHtml(element);
-    const blob = new Blob([htmlContent], { type: 'text/html' });
+
+const downloadBlob = (fname:string, blob: Blob) => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `CV_${name.replace(/\s/g, '_')}.html`;
+    a.download = fname;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+}
+
+
+export const downloadAsJSON = (cvData: CVData) => {
+    const str = JSON.stringify(cvData);
+
+    const blob = new Blob([str], { type: 'application/json' });
+    
+    const name = cvData.name.replace(/\s/g, '_') || 'Unnamed'
+    const fname = `CV_${name}.json`
+
+    downloadBlob(fname, blob)
+};
+
+
+export const downloadAsHtml = (element: HTMLElement, name: string) => {
+    const htmlContent = getCvHtml(element);
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+
+    const validName = name.replace(/\s/g, '_') || 'Unnamed'
+    const fname = `CV_${validName}.html`
+
+    downloadBlob(fname, blob)
 }
 
 export const downloadAsPdf = (element: HTMLElement, name: string) => {

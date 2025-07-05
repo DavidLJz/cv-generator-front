@@ -3,7 +3,7 @@ import React, { useState, useRef, useCallback } from 'react';
 import { CVData, Experience, Education, Certification } from './types';
 import CVForm from './components/CVForm';
 import CVPreview from './components/CVPreview';
-import { downloadAsHtml, downloadAsPdf } from './services/downloadService';
+import { downloadAsHtml, downloadAsPdf, downloadAsJSON } from './services/downloadService';
 
 const initialCVData: CVData = {
     name: "David Lugo",
@@ -19,6 +19,13 @@ const initialCVData: CVData = {
         soft: "Comunicación Efectiva, Resolución de Problemas, Trabajo en Equipo, Liderazgo, Adaptabilidad, Pensamiento Crítico"
     },
     experience: [
+        {
+            id: 'exp1',
+            companyName: "Desconocido",
+            jobTitle: "Desarrollador de Software Senior",
+            datesLocation: "5 años de experiencia",
+            responsibilities: "Desarrollador de software senior con 5 años de experiencia en el diseño, desarrollo y despliegue de soluciones backend robustas y escalables, con un enfoque reciente en la integración de Inteligencia Artificial."
+        }
     ],
     education: [
         {
@@ -49,6 +56,12 @@ const App: React.FC = () => {
         }
     }, [cvData.name]);
 
+    const handleDownloadJson = useCallback(() => {
+        if (cvPreviewRef.current) {
+            downloadAsJSON(cvData)
+        }
+    }, [cvData.name])
+
     return (
         <div className="bg-gray-100 min-h-screen text-gray-800">
             <header className="bg-white shadow-md p-4">
@@ -66,6 +79,13 @@ const App: React.FC = () => {
                             className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 flex items-center space-x-2"
                         >
                             <span>Descargar PDF</span>
+                        </button>
+
+                        <button
+                            onClick={handleDownloadJson}
+                            className="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 flex items-center space-x-2"
+                        >
+                            <span>Descarga JSON</span>
                         </button>
                     </div>
                 </div>
