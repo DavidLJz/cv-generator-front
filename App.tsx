@@ -4,6 +4,7 @@ import { CVData, Experience, Education, Certification } from './types';
 import CVForm from './components/CVForm';
 import CVPreview from './components/CVPreview';
 import { downloadAsHtml, downloadAsPdf, downloadAsJSON } from './services/downloadService';
+import { importJsonData } from './services/importService';
 
 const initialCVData: CVData = {
     name: "David Lugo",
@@ -60,7 +61,34 @@ const App: React.FC = () => {
         if (cvPreviewRef.current) {
             downloadAsJSON(cvData)
         }
-    }, [cvData.name])
+    }, [cvData.name]);
+
+    const handleImportJson = useCallback(() => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'application/json';
+
+        input.onchange = async (event: Event) => {
+            const target = event.target as HTMLInputElement;
+
+            if (!target.files || target.files.length === 0) {
+                alert('No file loaded!')
+                return
+            }
+
+            const file = target.files[0];
+
+            try {
+                const importedData = await importJsonData(file);
+                setCvData(importedData);
+            } catch (error) {
+                console.error(error)
+                alert('Error al importar el archivo JSON. Verifica el formato.');
+            }
+        };
+
+        input.click();
+    }, [cvData.name]);
 
     return (
         <div className="bg-gray-100 min-h-screen text-gray-800">
@@ -79,6 +107,13 @@ const App: React.FC = () => {
                             className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 flex items-center space-x-2"
                         >
                             <span>Descargar PDF</span>
+                        </button>
+
+                        <button
+                            onClick={handleImportJson}
+                            className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 flex items-center space-x-2"
+                        >
+                            <span>Importar JSON</span>
                         </button>
 
                         <button
